@@ -1,23 +1,24 @@
-# Use official Node.js image
+# Use official Node.js base image
 FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy source code
-COPY . .
-
-# Install dependencies
+# Copy package files and install deps
+COPY package.json yarn.lock ./
 RUN yarn install
 
-# Build static files
+# Copy the rest of your code
+COPY . .
+
+# Build the static site
 RUN yarn build
 
-# Install a static server
+# Install serve to host the static output
 RUN yarn global add serve
 
-# Expose the port your app will run on
+# Expose port
 EXPOSE 3000
 
-# Command to run the server
+# Start the static server
 CMD ["serve", "-s", "out", "-l", "3000"]
